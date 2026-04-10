@@ -144,12 +144,35 @@
     };
 
     const questions = [
-      { id: 'q1', dim: 'S1', text: '我常觉得自己是地底的老鼠，窥探着地上的美好。', options: [{label:'太真实了',v:1}, {label:'偶尔会酸',v:2}, {label:'老子是王',v:3}] },
-      { id: 'q2', dim: 'So1', text: '朋友带了陌生人参加聚会，你的反应是？', options: [{label:'瞬间冷场',v:1}, {label:'礼貌假笑',v:2}, {label:'自来熟开聊',v:3}] },
-      { id: 'q3', dim: 'Ac2', text: '做决定时，你通常：', options: [{label:'纠结到死',v:1}, {label:'听天由命',v:2}, {label:'果断拍板',v:3}] },
-      { id: 'q4', dim: 'A1', text: '看到萌妹子给你棒棒糖，你的第一反应：', options: [{label:'新型诈骗',v:1}, {label:'她好可爱',v:3}, {label:'一脸懵逼',v:2}] },
-      { id: 'q5', dim: 'E3', text: '恋爱后对象非常黏人，你：', options: [{label:'窒息想逃',v:3}, {label:'乐在其中',v:1}, {label:'随ta去吧',v:2}] },
-      // ... 简便起见此处只列出5个，你可以根据之前提供的列表补全所有 30 题 ...
+      // --- S组：自我与价值 (Self & Value) ---
+      { id: 'q1', dim: 'S1', text: '当你在镜子里看到自己时，你的第一反应通常是：', options: [{label:'由于太帅/美而感到自豪',v:3}, {label:'平庸的皮囊，毫无波澜',v:2}, {label:'快快快，把镜子砸了',v:1}] },
+      { id: 'q2', dim: 'S2', text: '如果你突然获得一笔巨款，你会：', options: [{label:'按计划投资，理性增值',v:3}, {label:'先买个爽，然后迷茫',v:2}, {label:'报复性消费，彻底失控',v:1}] },
+      { id: 'q3', dim: 'S3', text: '你认为“道德”对你来说意味着什么？', options: [{label:'必须要坚守的底线',v:3}, {label:'看情况，只要不被发现就行',v:2}, {label:'束缚强者（我）的枷锁',v:1}] },
+      { id: 'q4', dim: 'S1', text: '深夜一个人时，你最常感到的情绪是：', options: [{label:'充实的宁静',v:3}, {label:'对明天的焦虑',v:2}, {label:'被世界抛弃的虚无',v:1}] },
+
+      // --- E组：情感与边界 (Emotion & Boundary) ---
+      { id: 'q5', dim: 'E1', text: '当喜欢的人没有及时回你消息，你会：', options: [{label:'ta可能在忙，无所谓',v:3}, {label:'反思是不是自己说错话了',v:2}, {label:'脑补ta已经出车祸或出轨',v:1}] },
+      { id: 'q6', dim: 'E2', text: '在一段关系中，你通常是：', options: [{label:'理智的观察者',v:3}, {label:'随风摇摆的附庸',v:2}, {label:'自我感动的恋爱脑',v:1}] },
+      { id: 'q7', dim: 'E3', text: '朋友向你借钱但没还，你的处理方式：', options: [{label:'直接开口要，不行就拉黑',v:3}, {label:'委婉暗示，内心滴血',v:2}, {label:'算了，当买个教训（怂）',v:1}] },
+      { id: 'q8', dim: 'E1', text: '面对别人的夸奖，你的真实心理是：', options: [{label:'这还用你说？',v:3}, {label:'礼貌感谢，但不当真',v:2}, {label:'ta肯定在阴阳怪气我',v:1}] },
+
+      // --- A组：世界观与意义 (Philosophy & Meaning) ---
+      { id: 'q9', dim: 'A1', text: '你如何看待“努力就有回报”这句话？', options: [{label:'人生信条',v:3}, {label:'自我安慰的鸡汤',v:2}, {label:'针对弱智的洗脑包',v:1}] },
+      { id: 'q10', dim: 'A2', text: '在规则面前，你通常会选择：', options: [{label:'绝对遵守，哪怕不合理',v:3}, {label:'打擦边球，灵活变通',v:2}, {label:'只要不违法，怎么爽怎么来',v:1}] },
+      { id: 'q11', dim: 'A3', text: '如果明天就是世界末日，你会：', options: [{label:'平静地陪伴家人',v:3}, {label:'疯狂释放欲望',v:2}, {label:'立刻自杀，抢夺主动权',v:1}] },
+      { id: 'q12', dim: 'A2', text: '看到坏人得不到惩罚，你会：', options: [{label:'愤怒并尝试发声',v:3}, {label:'感叹世道不公',v:2}, {label:'学习对方的致富手段',v:1}] },
+
+      // --- Ac组：执行与决策 (Action & Style) ---
+      { id: 'q13', dim: 'Ac1', text: '你做事的原始动力通常来源于：', options: [{label:'对卓越的追求',v:3}, {label:'对贫穷/落后的恐惧',v:2}, {label:'截稿日期的逼迫',v:1}] },
+      { id: 'q14', dim: 'Ac2', text: '买东西时发现买贵了，你会：', options: [{label:'找商家理论/退货',v:3}, {label:'暗自不爽，下次注意',v:2}, {label:'骗自己“一分钱一分货”',v:1}] },
+      { id: 'q15', dim: 'Ac3', text: '遇到困难的任务，你的第一反应是：', options: [{label:'拆解步骤，立刻开始',v:3}, {label:'搜索有没有捷径可走',v:2}, {label:'先睡一觉再说',v:1}] },
+      { id: 'q16', dim: 'Ac3', text: '你的房间目前的状态是：', options: [{label:'井井有条，一尘不染',v:3}, {label:'乱中有序，找得到东西',v:2}, {label:'猪窝（但温馨）',v:1}] },
+
+      // --- So组：社交与真实 (Social & Truth) ---
+      { id: 'q17', dim: 'So1', text: '去参加一个完全没有熟人的局，你会：', options: [{label:'主动出击，全场焦点',v:3}, {label:'缩在角落玩手机',v:2}, {label:'找个借口中途逃跑',v:1}] },
+      { id: 'q18', dim: 'So2', text: '当同事/同学当众出了丑，你会：', options: [{label:'解围，给对方台阶',v:3}, {label:'憋笑，顺便发个朋友圈',v:2}, {label:'落井下石，狠狠嘲笑',v:1}] },
+      { id: 'q19', dim: 'So3', text: '你对“讨好型人格”的评价是：', options: [{label:'值得同情的温柔',v:3}, {label:'社交的润滑剂',v:2}, {label:'没有脊梁骨的蠕虫',v:1}] },
+      { id: 'q20', dim: 'So1', text: '如果有人当众反驳你的观点，你会：', options: [{label:'逻辑严密地反击',v:3}, {label:'面红耳赤，语无伦次',v:2}, {label:'表面点头，内心咒骂',v:1}] }
     ];
 
     const TYPE_LIBRARY = {
