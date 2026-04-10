@@ -1,203 +1,630 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SBTI 人格测试 - MBTI 的终结者</title>
-  <style>
-    :root {
-      --bg: #f6faf6;
-      --panel: #ffffff;
-      --text: #1e2a22;
-      --muted: #6a786f;
-      --line: #dbe8dd;
-      --soft: #edf6ef;
-      --accent: #6c8d71;
-      --accent-strong: #4d6a53;
-      --shadow: 0 16px 40px rgba(47, 73, 55, 0.08);
-      --radius: 22px;
-    }
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SBTI 人格测试 - MBTI 的终结者</title>
+    <style>
+        :root {
+            --bg: #f6faf6;
+            --panel: #ffffff;
+            --text: #1e2a22;
+            --muted: #6a786f;
+            --line: #dbe8dd;
+            --soft: #edf6ef;
+            --accent: #6c8d71;
+            --accent-strong: #4d6a53;
+            --shadow: 0 16px 40px rgba(47, 73, 55, 0.08);
+            --radius: 22px;
+        }
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: radial-gradient(circle at top left, #f8fff8 0, #f6faf6 36%, #f2f7f3 100%);
-      color: var(--text);
-      min-height: 100vh;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .shell { max-width: 980px; margin: 0 auto; padding: 24px 16px 56px; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-    .hero { padding: 28px; margin-top: 20px; position: relative; overflow: hidden; }
-    .hero-minimal { min-height: 48vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
 
-    h1 { font-size: clamp(28px, 5vw, 52px); line-height: 1.08; letter-spacing: -0.03em; margin: 0; }
-    .btn-primary { background: var(--accent-strong); color: #fff; padding: 14px 28px; border-radius: 14px; font-weight: 700; border: 0; cursor: pointer; transition: transform .16s ease; }
-    .btn-secondary { background: #fff; color: var(--accent-strong); padding: 14px 28px; border-radius: 14px; border: 1px solid var(--line); font-weight: 700; cursor: pointer; }
-    button:hover { transform: translateY(-2px); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: radial-gradient(circle at top left, #f8fff8 0, #f6faf6 36%, #f2f7f3 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-    .screen { display: none; }
-    .screen.active { display: block; }
+        .shell {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 24px 16px 56px;
+        }
 
-    /* 测试页样式 */
-    .test-wrap { padding: 22px; margin-top: 22px; }
-    .topbar { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-    .progress { flex: 1; height: 10px; background: #edf3ee; border-radius: 999px; overflow: hidden; }
-    #progressBar { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, #97b59c, #5b7a62); transition: width .3s ease; }
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
 
-    .question { border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px; background: #fff; }
-    .question-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-    .question-title { font-size: 16px; line-height: 1.6; font-weight: 500; }
+        .hero {
+            padding: 28px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .options { display: grid; gap: 10px; margin-top: 14px; }
-    .option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
-    .option:hover { background: var(--soft); border-color: var(--accent); }
-    .option input { accent-color: var(--accent-strong); }
+        .hero-minimal {
+            min-height: 48vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
 
-    /* 结果页样式 */
-    .result-layout { display: grid; gap: 20px; }
-    .result-top { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .type-box, .analysis-box, .dim-box { padding: 24px; border: 1px solid var(--line); border-radius: 22px; background: #fff; }
-    .type-name { font-size: 38px; font-weight: 800; color: var(--accent-strong); margin: 10px 0; }
-    .type-subname { color: var(--muted); font-style: italic; margin-bottom: 15px; }
-    .analysis-box p { line-height: 1.8; color: #334139; white-space: pre-wrap; }
+        h1 {
+            font-size: clamp(28px, 5vw, 52px);
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            margin: 0;
+        }
 
-    .dim-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-    .dim-item { border: 1px solid var(--line); padding: 15px; border-radius: 14px; }
-    .dim-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; }
-    .dim-bar-bg { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
-    .dim-bar-fill { height: 100%; background: var(--accent); transition: width 1s ease-out; }
+        .btn-primary {
+            background: var(--accent-strong);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            border: 0;
+            cursor: pointer;
+            transition: transform .16s ease;
+        }
 
-    @media (max-width: 768px) {
-      .result-top { grid-template-columns: 1fr; }
-    }
-  </style>
+        .btn-secondary {
+            background: #fff;
+            color: var(--accent-strong);
+            padding: 14px 28px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* 测试页样式 */
+        .test-wrap {
+            padding: 22px;
+            margin-top: 22px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .progress {
+            flex: 1;
+            height: 10px;
+            background: #edf3ee;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        #progressBar {
+            display: block;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #97b59c, #5b7a62);
+            transition: width .3s ease;
+        }
+
+        .question {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            background: #fff;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .question-title {
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            background: var(--soft);
+            border-color: var(--accent);
+        }
+
+        .option input {
+            accent-color: var(--accent-strong);
+        }
+
+        /* 结果页样式 */
+        .result-layout {
+            display: grid;
+            gap: 20px;
+        }
+
+        .result-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .type-box, .analysis-box, .dim-box {
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: #fff;
+        }
+
+        .type-name {
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--accent-strong);
+            margin: 10px 0;
+        }
+
+        .type-subname {
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .analysis-box p {
+            line-height: 1.8;
+            color: #334139;
+            white-space: pre-wrap;
+        }
+
+        .dim-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .dim-item {
+            border: 1px solid var(--line);
+            padding: 15px;
+            border-radius: 14px;
+        }
+
+        .dim-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .dim-bar-bg {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .dim-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 1s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .result-top {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="shell">
+<div class="shell">
     <section id="intro" class="screen active">
-      <div class="hero card hero-minimal">
-        <h1>MBTI 已经过时，SBTI 来了。</h1>
-        <p style="color: var(--muted); margin: 20px 0;">一项旨在通过毒舌揭露你灵魂深处“不可告人”特质的实验性测试。</p>
-        <div class="hero-actions">
-          <button id="startBtn" class="btn-primary">开始直面自我</button>
+        <div class="hero card hero-minimal">
+            <h1>MBTI 已经过时，SBTI 来了。</h1>
+            <p style="color: var(--muted); margin: 20px 0;">
+                一项旨在通过毒舌揭露你灵魂深处“不可告人”特质的实验性测试。</p>
+            <div class="hero-actions">
+                <button id="startBtn" class="btn-primary">开始直面自我</button>
+            </div>
+            <div style="margin-top: 40px; font-size: 12px; color: var(--muted); line-height: 2;">
+                原作者：B站 @蛆肉儿串儿 | 适配：铁铁、贝贝
+            </div>
         </div>
-        <div style="margin-top: 40px; font-size: 12px; color: var(--muted); line-height: 2;">
-          原作者：B站 @蛆肉儿串儿 | 适配：铁铁、贝贝
-        </div>
-      </div>
     </section>
 
     <section id="test" class="screen">
-      <div class="test-wrap card">
-        <div class="topbar">
-          <div class="progress"><span id="progressBar"></span></div>
-          <div id="progressText" class="progress-text">0 / 30</div>
+        <div class="test-wrap card">
+            <div class="topbar">
+                <div class="progress"><span id="progressBar"></span></div>
+                <div id="progressText" class="progress-text">0 / 30</div>
+            </div>
+            <div id="questionList"></div>
+            <div style="display: flex; justify-content: space-between; margin-top: 30px; align-items: center;">
+                <div id="testHint" style="font-size: 13px; color: var(--muted);">回答所有问题以解锁结果</div>
+                <button id="submitBtn" class="btn-primary" disabled>查看判决书</button>
+            </div>
         </div>
-        <div id="questionList"></div>
-        <div style="display: flex; justify-content: space-between; margin-top: 30px; align-items: center;">
-            <div id="testHint" style="font-size: 13px; color: var(--muted);">回答所有问题以解锁结果</div>
-            <button id="submitBtn" class="btn-primary" disabled>查看判决书</button>
-        </div>
-      </div>
     </section>
 
     <section id="result" class="screen">
-      <div class="result-layout">
-        <div class="result-top">
-          <div class="type-box">
-            <div style="font-size: 12px; color: var(--accent);">你的核心人格类型</div>
-            <div id="resultTypeName" class="type-name">加载中...</div>
-            <div id="resultTypeSub" class="type-subname"></div>
-            <div style="background: var(--soft); padding: 10px; border-radius: 10px; font-size: 13px; color: var(--accent-strong);">
-                匹配度：98.7% (高危)
+        <div class="result-layout">
+            <div class="result-top">
+                <div class="type-box">
+                    <div style="font-size: 12px; color: var(--accent);">你的核心人格类型</div>
+                    <div id="resultTypeName" class="type-name">加载中...</div>
+                    <div id="resultTypeSub" class="type-subname"></div>
+                    <div style="background: var(--soft); padding: 10px; border-radius: 10px; font-size: 13px; color: var(--accent-strong);">
+                        匹配度：98.7% (高危)
+                    </div>
+                </div>
+                <div class="analysis-box">
+                    <h3>深度解读</h3>
+                    <p id="resultDesc"></p>
+                </div>
             </div>
-          </div>
-          <div class="analysis-box">
-            <h3>深度解读</h3>
-            <p id="resultDesc"></p>
-          </div>
-        </div>
 
-        <div class="dim-box">
-          <h3>十五维度数据分析</h3>
-          <div id="dimList" class="dim-list"></div>
-        </div>
+            <div class="dim-box">
+                <h3>十五维度数据分析</h3>
+                <div id="dimList" class="dim-list"></div>
+            </div>
 
-        <div style="text-align: center; margin-top: 20px;">
-          <button onclick="location.reload()" class="btn-secondary">重新洗心革面</button>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="location.reload()" class="btn-secondary">重新洗心革面</button>
+            </div>
         </div>
-      </div>
     </section>
-  </div>
+</div>
 
-  <script>
+<script>
     // --- 数据配置 ---
     const dimensionMeta = {
-      S1: '自尊自信', S2: '自我清晰度', S3: '核心价值',
-      E1: '依恋安全感', E2: '情感投入度', E3: '边界与依赖',
-      A1: '世界观倾向', A2: '规则灵活度', A3: '人生意义感',
-      Ac1: '动机导向', Ac2: '决策风格', Ac3: '执行模式',
-      So1: '社交主动性', So2: '人际边界感', So3: '表达真实度'
+        S1: '自尊自信', S2: '自我清晰度', S3: '核心价值',
+        E1: '依恋安全感', E2: '情感投入度', E3: '边界与依赖',
+        A1: '世界观倾向', A2: '规则灵活度', A3: '人生意义感',
+        Ac1: '动机导向', Ac2: '决策风格', Ac3: '执行模式',
+        So1: '社交主动性', So2: '人际边界感', So3: '表达真实度'
     };
 
     const questions = [
-      // --- S组：自我与价值 (Self & Value) ---
-      { id: 'q1', dim: 'S1', text: '当你在镜子里看到自己时，你的第一反应通常是：', options: [{label:'由于太帅/美而感到自豪',v:3}, {label:'平庸的皮囊，毫无波澜',v:2}, {label:'快快快，把镜子砸了',v:1}] },
-      { id: 'q2', dim: 'S2', text: '如果你突然获得一笔巨款，你会：', options: [{label:'按计划投资，理性增值',v:3}, {label:'先买个爽，然后迷茫',v:2}, {label:'报复性消费，彻底失控',v:1}] },
-      { id: 'q3', dim: 'S3', text: '你认为“道德”对你来说意味着什么？', options: [{label:'必须要坚守的底线',v:3}, {label:'看情况，只要不被发现就行',v:2}, {label:'束缚强者（我）的枷锁',v:1}] },
-      { id: 'q4', dim: 'S1', text: '深夜一个人时，你最常感到的情绪是：', options: [{label:'充实的宁静',v:3}, {label:'对明天的焦虑',v:2}, {label:'被世界抛弃的虚无',v:1}] },
+        // --- S组：自我与价值 (Self & Value) ---
+        {
+            id: 'q1',
+            dim: 'S1',
+            text: '当你在镜子里看到自己时，你的第一反应通常是：',
+            options: [{label: '由于太帅/美而感到自豪', v: 3}, {
+                label: '平庸的皮囊，毫无波澜',
+                v: 2
+            }, {label: '快快快，把镜子砸了', v: 1}]
+        },
+        {
+            id: 'q2',
+            dim: 'S2',
+            text: '如果你突然获得一笔巨款，你会：',
+            options: [{label: '按计划投资，理性增值', v: 3}, {
+                label: '先买个爽，然后迷茫',
+                v: 2
+            }, {label: '报复性消费，彻底失控', v: 1}]
+        },
+        {
+            id: 'q3',
+            dim: 'S3',
+            text: '你认为“道德”对你来说意味着什么？',
+            options: [{label: '必须要坚守的底线', v: 3}, {
+                label: '看情况，只要不被发现就行',
+                v: 2
+            }, {label: '束缚强者（我）的枷锁', v: 1}]
+        },
+        {
+            id: 'q4',
+            dim: 'S1',
+            text: '深夜一个人时，你最常感到的情绪是：',
+            options: [{label: '充实的宁静', v: 3}, {label: '对明天的焦虑', v: 2}, {label: '被世界抛弃的虚无', v: 1}]
+        },
 
-      // --- E组：情感与边界 (Emotion & Boundary) ---
-      { id: 'q5', dim: 'E1', text: '当喜欢的人没有及时回你消息，你会：', options: [{label:'ta可能在忙，无所谓',v:3}, {label:'反思是不是自己说错话了',v:2}, {label:'脑补ta已经出车祸或出轨',v:1}] },
-      { id: 'q6', dim: 'E2', text: '在一段关系中，你通常是：', options: [{label:'理智的观察者',v:3}, {label:'随风摇摆的附庸',v:2}, {label:'自我感动的恋爱脑',v:1}] },
-      { id: 'q7', dim: 'E3', text: '朋友向你借钱但没还，你的处理方式：', options: [{label:'直接开口要，不行就拉黑',v:3}, {label:'委婉暗示，内心滴血',v:2}, {label:'算了，当买个教训（怂）',v:1}] },
-      { id: 'q8', dim: 'E1', text: '面对别人的夸奖，你的真实心理是：', options: [{label:'这还用你说？',v:3}, {label:'礼貌感谢，但不当真',v:2}, {label:'ta肯定在阴阳怪气我',v:1}] },
+        // --- E组：情感与边界 (Emotion & Boundary) ---
+        {
+            id: 'q5',
+            dim: 'E1',
+            text: '当喜欢的人没有及时回你消息，你会：',
+            options: [{label: 'ta可能在忙，无所谓', v: 3}, {
+                label: '反思是不是自己说错话了',
+                v: 2
+            }, {label: '脑补ta已经出车祸或出轨', v: 1}]
+        },
+        {
+            id: 'q6',
+            dim: 'E2',
+            text: '在一段关系中，你通常是：',
+            options: [{label: '理智的观察者', v: 3}, {label: '随风摇摆的附庸', v: 2}, {label: '自我感动的恋爱脑', v: 1}]
+        },
+        {
+            id: 'q7',
+            dim: 'E3',
+            text: '朋友向你借钱但没还，你的处理方式：',
+            options: [{label: '直接开口要，不行就拉黑', v: 3}, {
+                label: '委婉暗示，内心滴血',
+                v: 2
+            }, {label: '算了，当买个教训（怂）', v: 1}]
+        },
+        {
+            id: 'q8',
+            dim: 'E1',
+            text: '面对别人的夸奖，你的真实心理是：',
+            options: [{label: '这还用你说？', v: 3}, {label: '礼貌感谢，但不当真', v: 2}, {
+                label: 'ta肯定在阴阳怪气我',
+                v: 1
+            }]
+        },
 
-      // --- A组：世界观与意义 (Philosophy & Meaning) ---
-      { id: 'q9', dim: 'A1', text: '你如何看待“努力就有回报”这句话？', options: [{label:'人生信条',v:3}, {label:'自我安慰的鸡汤',v:2}, {label:'针对弱智的洗脑包',v:1}] },
-      { id: 'q10', dim: 'A2', text: '在规则面前，你通常会选择：', options: [{label:'绝对遵守，哪怕不合理',v:3}, {label:'打擦边球，灵活变通',v:2}, {label:'只要不违法，怎么爽怎么来',v:1}] },
-      { id: 'q11', dim: 'A3', text: '如果明天就是世界末日，你会：', options: [{label:'平静地陪伴家人',v:3}, {label:'疯狂释放欲望',v:2}, {label:'立刻自杀，抢夺主动权',v:1}] },
-      { id: 'q12', dim: 'A2', text: '看到坏人得不到惩罚，你会：', options: [{label:'愤怒并尝试发声',v:3}, {label:'感叹世道不公',v:2}, {label:'学习对方的致富手段',v:1}] },
+        // --- A组：世界观与意义 (Philosophy & Meaning) ---
+        {
+            id: 'q9',
+            dim: 'A1',
+            text: '你如何看待“努力就有回报”这句话？',
+            options: [{label: '人生信条', v: 3}, {label: '自我安慰的鸡汤', v: 2}, {label: '针对弱智的洗脑包', v: 1}]
+        },
+        {
+            id: 'q10',
+            dim: 'A2',
+            text: '在规则面前，你通常会选择：',
+            options: [{label: '绝对遵守，哪怕不合理', v: 3}, {
+                label: '打擦边球，灵活变通',
+                v: 2
+            }, {label: '只要不违法，怎么爽怎么来', v: 1}]
+        },
+        {
+            id: 'q11',
+            dim: 'A3',
+            text: '如果明天就是世界末日，你会：',
+            options: [{label: '平静地陪伴家人', v: 3}, {label: '疯狂释放欲望', v: 2}, {
+                label: '立刻自杀，抢夺主动权',
+                v: 1
+            }]
+        },
+        {
+            id: 'q12',
+            dim: 'A2',
+            text: '看到坏人得不到惩罚，你会：',
+            options: [{label: '愤怒并尝试发声', v: 3}, {label: '感叹世道不公', v: 2}, {
+                label: '学习对方的致富手段',
+                v: 1
+            }]
+        },
 
-      // --- Ac组：执行与决策 (Action & Style) ---
-      { id: 'q13', dim: 'Ac1', text: '你做事的原始动力通常来源于：', options: [{label:'对卓越的追求',v:3}, {label:'对贫穷/落后的恐惧',v:2}, {label:'截稿日期的逼迫',v:1}] },
-      { id: 'q14', dim: 'Ac2', text: '买东西时发现买贵了，你会：', options: [{label:'找商家理论/退货',v:3}, {label:'暗自不爽，下次注意',v:2}, {label:'骗自己“一分钱一分货”',v:1}] },
-      { id: 'q15', dim: 'Ac3', text: '遇到困难的任务，你的第一反应是：', options: [{label:'拆解步骤，立刻开始',v:3}, {label:'搜索有没有捷径可走',v:2}, {label:'先睡一觉再说',v:1}] },
-      { id: 'q16', dim: 'Ac3', text: '你的房间目前的状态是：', options: [{label:'井井有条，一尘不染',v:3}, {label:'乱中有序，找得到东西',v:2}, {label:'猪窝（但温馨）',v:1}] },
+        // --- Ac组：执行与决策 (Action & Style) ---
+        {
+            id: 'q13',
+            dim: 'Ac1',
+            text: '你做事的原始动力通常来源于：',
+            options: [{label: '对卓越的追求', v: 3}, {label: '对贫穷/落后的恐惧', v: 2}, {
+                label: '截稿日期的逼迫',
+                v: 1
+            }]
+        },
+        {
+            id: 'q14',
+            dim: 'Ac2',
+            text: '买东西时发现买贵了，你会：',
+            options: [{label: '找商家理论/退货', v: 3}, {
+                label: '暗自不爽，下次注意',
+                v: 2
+            }, {label: '骗自己“一分钱一分货”', v: 1}]
+        },
+        {
+            id: 'q15',
+            dim: 'Ac3',
+            text: '遇到困难的任务，你的第一反应是：',
+            options: [{label: '拆解步骤，立刻开始', v: 3}, {label: '搜索有没有捷径可走', v: 2}, {
+                label: '先睡一觉再说',
+                v: 1
+            }]
+        },
+        {
+            id: 'q16',
+            dim: 'Ac3',
+            text: '你的房间目前的状态是：',
+            options: [{label: '井井有条，一尘不染', v: 3}, {label: '乱中有序，找得到东西', v: 2}, {
+                label: '猪窝（但温馨）',
+                v: 1
+            }]
+        },
 
-      // --- So组：社交与真实 (Social & Truth) ---
-      { id: 'q17', dim: 'So1', text: '去参加一个完全没有熟人的局，你会：', options: [{label:'主动出击，全场焦点',v:3}, {label:'缩在角落玩手机',v:2}, {label:'找个借口中途逃跑',v:1}] },
-      { id: 'q18', dim: 'So2', text: '当同事/同学当众出了丑，你会：', options: [{label:'解围，给对方台阶',v:3}, {label:'憋笑，顺便发个朋友圈',v:2}, {label:'落井下石，狠狠嘲笑',v:1}] },
-      { id: 'q19', dim: 'So3', text: '你对“讨好型人格”的评价是：', options: [{label:'值得同情的温柔',v:3}, {label:'社交的润滑剂',v:2}, {label:'没有脊梁骨的蠕虫',v:1}] },
-      { id: 'q20', dim: 'So1', text: '如果有人当众反驳你的观点，你会：', options: [{label:'逻辑严密地反击',v:3}, {label:'面红耳赤，语无伦次',v:2}, {label:'表面点头，内心咒骂',v:1}] }
+        // --- So组：社交与真实 (Social & Truth) ---
+        {
+            id: 'q17',
+            dim: 'So1',
+            text: '去参加一个完全没有熟人的局，你会：',
+            options: [{label: '主动出击，全场焦点', v: 3}, {label: '缩在角落玩手机', v: 2}, {
+                label: '找个借口中途逃跑',
+                v: 1
+            }]
+        },
+        {
+            id: 'q18',
+            dim: 'So2',
+            text: '当同事/同学当众出了丑，你会：',
+            options: [{label: '解围，给对方台阶', v: 3}, {
+                label: '憋笑，顺便发个朋友圈',
+                v: 2
+            }, {label: '落井下石，狠狠嘲笑', v: 1}]
+        },
+        {
+            id: 'q19',
+            dim: 'So3',
+            text: '你对“讨好型人格”的评价是：',
+            options: [{label: '值得同情的温柔', v: 3}, {label: '社交的润滑剂', v: 2}, {label: '没有脊梁骨的蠕虫', v: 1}]
+        },
+        {
+            id: 'q20',
+            dim: 'So1',
+            text: '如果有人当众反驳你的观点，你会：',
+            options: [{label: '逻辑严密地反击', v: 3}, {label: '面红耳赤，语无伦次', v: 2}, {
+                label: '表面点头，内心咒骂',
+                v: 1
+            }]
+        }
     ];
 
     const TYPE_LIBRARY = {
-      "INTJ": { cn: "孤独大魔王", intro: "你是上帝派来格式化世界的吗？", desc: "你不是在计划生活，你是在试图格式化世界。你的傲慢已经溢出屏幕了：觉得别人都是NPC，只有你拿着剧本。实际上你连买个外卖都要脑内预演三次。你所谓的战略，本质上是对失控的深度恐惧。" },
-      "ENFP": { cn: "快乐修狗", intro: "灵魂厚度只有一张纸。", desc: "你不是快乐，你只是因为大脑内存太小记不住昨天的痛苦。你所谓的‘自由灵魂’在现实中往往表现为极度不靠谱，给别人留下一地鸡毛，而你已经蹦跳着去追逐下一个精神垃圾了。" },
-      "ISTJ": { cn: "古董计算机", intro: "你的人生就是一张表格。", desc: "你的刻板程度已经是行为艺术。你不仅折磨自己，还通过那套毫无灵魂的死规矩折磨每个路过的人。在这个充满生命力的世界里，你活得像块顽固的砖头。" },
-      "INFP": { cn: "内耗大师", intro: "你的眼泪淹没了理智。", desc: "你每天都在表演‘全世界都没人懂我’，其实你只是沉溺于‘破碎感’无法自拔。你所谓的善良是逃避责任的挡箭牌：因为你‘心碎了’，所以全世界都得停下来为你买单。" },
-      // 默认兜底
-      "DEFAULT": { cn: "复杂矛盾体", intro: "由于你太能装，系统死机了。", desc: "你的人格极其不稳定，像是在各个维度反复横跳。这种复杂性或许是你保护色的终极形态：让任何人都无法定义你，包括你自己。" }
+        "INTJ": {
+            "code": "INTJ",
+            "cn": "孤独大魔王",
+            "intro": "你是上帝派来格式化世界的吗？",
+            "desc": "你不是在计划生活，你是在试图格式化世界。你的傲慢已经溢出屏幕了：觉得别人都是NPC，只有你拿着剧本。其实你只是个连下楼买个外卖都要预演三遍社交逻辑、甚至要在脑内给外卖员做背景调查的‘孤独大魔王’。你所谓的战略眼光，本质上是对无法掌控现实的深度恐惧，所以才躲在逻辑的堡垒里，指点那些活得比你真实得多的人。"
+        },
+        "INTP": {
+            "code": "INTP",
+            "cn": "卡死的系统",
+            "intro": "精神世界的巨人，生活自理的矮子。",
+            "desc": "你可以花五个小时研究宇宙弦理论，却没法花五秒钟把垃圾袋扎好。你所谓的‘独立思考’，在别人眼里只是‘由于社交CPU过热导致的系统卡死’。你总是摆出一副看透世俗的疏离感，其实大家心里都清楚：你只是单纯地害怕社交失败，才把自己包装成一个怀才不遇的边缘天才，好掩盖你那稀碎的执行力。"
+        },
+        "ENTJ": {
+            "code": "ENTJ",
+            "cn": "带刺的卷王",
+            "intro": "人形卷纸，还是带刺的那种。",
+            "desc": "你觉得自己是在带大家走向成功，其实大家只是想求你闭嘴歇会儿。你的人生目标是征服世界，但你连自己的控制欲都征服不了，活得像个随时会爆炸的压力锅。在你的世界里，所有人都是可以被量化的耗材。你忙碌一生，最后可能连个真心想陪你吃顿饭的人都没有。"
+        },
+        "ENTP": {
+            "code": "ENTP",
+            "cn": "杠精转世",
+            "intro": "如果有人说‘我爱你’，你都要先拆解逻辑漏洞。",
+            "desc": "你不是为了真理而辩论，你纯粹是为了看别人被你气到语塞时的表情。你换爱好的速度比换袜子还快，这种‘博学’不过是深度逃避的表现——你害怕在任何一个领域真正扎根，因为那意味着你得面对那个平庸且无法跳脱的真实自我。"
+        },
+        "INFJ": {
+            "code": "INFJ",
+            "cn": "圣母审判官",
+            "intro": "披着圣母外衣，内心谁也瞧不上。",
+            "desc": "你的共情能力是你杀人不见血的刀：先把你感动得一塌糊涂，然后再在心里默默给你打个‘无可救药’的负分。你这种‘拯救者’的姿态本质上是一种隐秘的自恋，你喜欢的不是那个被你救赎的人，而是那个‘救赎了众生’的伟大滤镜下的自己。"
+        },
+        "INFP": {
+            "code": "INFP",
+            "cn": "内耗大师",
+            "intro": "你的眼泪不是水，是淹没理智的洪水。",
+            "desc": "你每天都在表演‘全世界都没人懂我’的内心戏，实际上你连自己想要什么都搞不清楚，你只是沉溺于那种‘破碎感’无法自拔。你所谓的纯粹和善良，往往成了你逃避责任的挡箭牌：因为你‘心碎了’，所以全世界都得停下来为你那无处安放的小情绪买单。"
+        },
+        "ENFJ": {
+            "code": "ENFJ",
+            "cn": "情感传销员",
+            "intro": "你的关心像廉价糖浆，粘稠得让人窒息。",
+            "desc": "你拼命想让每个人都变好，其实是受不了有人不按照你设计的‘完美剧本’演戏。你所谓的付出往往带着沉重的道德利息：你把别人推向你认为的终点，却从未问过对方愿不愿意上车。你不是主人公，你只是个强行给别人加戏的导演。"
+        },
+        "ENFP": {
+            "code": "ENFP",
+            "cn": "过时烟花",
+            "intro": "你压根就没进化，灵魂还停留在荡秋千的时代。",
+            "desc": "你不是快乐，你只是因为大脑内存太小，记不住昨天的痛苦。你这种‘自由灵魂’在现实中往往表现为极度不靠谱，给别人留下一地鸡毛，而你已经蹦跳着去追逐下一个新鲜的‘精神垃圾’了，美其名曰追寻自我。"
+        },
+        "ISTJ": {
+            "code": "ISTJ",
+            "cn": "古董计算机",
+            "intro": "你的人生就是一张表格，漏个标点都能焦虑。",
+            "desc": "你的刻板程度已经到了行为艺术的级别。你不仅折磨自己，还通过那套毫无灵魂的死规矩折磨每一个试图在生活里呼吸自由空气的人。在这个充满生命力的世界里，你活得像块顽固的砖头。"
+        },
+        "ISFJ": {
+            "code": "ISFJ",
+            "cn": "受气包高利贷",
+            "intro": "你不是善良，你只是不敢面对冲突。",
+            "desc": "你那种‘委曲求全’的奉献，有时候更像是一种高利贷：‘我都对你这么好了，你怎么还不听我的？’你这种廉价的自我牺牲，本质上是想通过‘有用性’来换取一点可怜的安全感，甚至不惜让对方感到愧疚。"
+        },
+        "ESTJ": {
+            "code": "ESTJ",
+            "cn": "人间教导主任",
+            "intro": "如果你不整齐，我就去修剪你的脑壳。",
+            "desc": "你这种对‘秩序’的狂热，其实是对生命力的一种阉割。在你的管理下，所有有趣的东西都会凋零，剩下的只有死气沉沉的‘正确’和无休止的服从。你的快乐就是制定规则并强迫别人遵守，哪怕规则已经过时了半个世纪。"
+        },
+        "ESFJ": {
+            "code": "ESFJ",
+            "cn": "社交居委会",
+            "intro": "你不是在交朋友，你是在经营‘人缘’贸易。",
+            "desc": "你掌握了方圆十里的八卦，并强迫每个人加入你的‘大家庭’。你太害怕被孤立了，以至于你的每一个笑容都像是经过精密计算的社交货币。你所谓的‘为你好’，往往是别人最大的压力来源。"
+        },
+        "ISTP": {
+            "code": "ISTP",
+            "cn": "冷漠修理工",
+            "intro": "你对人的兴趣还不如对坏掉的电风扇高。",
+            "desc": "你所谓的‘酷’和‘独立’，本质上是社交能力的严重退化。你害怕面对复杂的情感，所以才躲在那些零件和代码后面，假装自己是个不需要温度的精密机器。反正想不通，不如拆开看看，不行就扔了。"
+        },
+        "ISFP": {
+            "code": "ISFP",
+            "cn": "逃避艺术家",
+            "intro": "你不是在感受美，你只是在逃避死线。",
+            "desc": "你那点细腻的情感，大多用来感慨自己的怀才不遇。你活在自己制造的粉红泡泡里，只要现实稍微刺一下，你就能缩进壳里睡上半年。你所谓的‘追求自由’，本质上就是‘别管我，让我躺平’。"
+        },
+        "ESTP": {
+            "code": "ESTP",
+            "cn": "冲动巨婴",
+            "intro": "决策时间比眨眼短，后悔时间占一辈子。",
+            "desc": "你不是勇敢，你只是单纯地没想过‘后果’两个字怎么写。你的人生就是一连串的感官刺激和烂摊子，你还觉得自己活得特别精彩，其实你只是在惯性下疯狂自燃，顺便把周围人的耐心也烧个精光。"
+        },
+        "ESFP": {
+            "code": "ESFP",
+            "cn": "多动症烟花",
+            "intro": "灵魂厚度只有一张纸，不被关注就会枯竭。",
+            "desc": "如果你不被人关注，你就会像没电的玩偶一样原地枯竭。你所谓的‘活在当下’，其实是对未来的完全无能为力，只能靠不断的廉价社交欢呼来麻痹自己那颗空洞得能听到回声的心。"
+        }
     };
 
     // --- 逻辑控制 ---
     let userAnswers = {};
 
     document.getElementById('startBtn').onclick = () => {
-      document.getElementById('intro').classList.remove('active');
-      document.getElementById('test').classList.add('active');
-      renderQuestions();
+        document.getElementById('intro').classList.remove('active');
+        document.getElementById('test').classList.add('active');
+        renderQuestions();
     };
 
     function renderQuestions() {
-      const container = document.getElementById('questionList');
-      container.innerHTML = questions.map((q, i) => `
+        const container = document.getElementById('questionList');
+        container.innerHTML = questions.map((q, i) => `
         <div class="question">
-          <div class="question-meta"><span>维度: ${dimensionMeta[q.dim]}</span><span>${i+1}/30</span></div>
+          <div class="question-meta"><span>维度: ${dimensionMeta[q.dim]}</span><span>${i + 1}/30</span></div>
           <div class="question-title">${q.text}</div>
           <div class="options">
             ${q.options.map(opt => `
@@ -212,40 +639,40 @@
     }
 
     window.handleSelect = (id, val) => {
-      userAnswers[id] = val;
-      const count = Object.keys(userAnswers).length;
-      document.getElementById('progressBar').style.width = (count / questions.length * 100) + '%';
-      document.getElementById('progressText').innerText = `${count} / ${questions.length}`;
-      if(count === questions.length) document.getElementById('submitBtn').disabled = false;
+        userAnswers[id] = val;
+        const count = Object.keys(userAnswers).length;
+        document.getElementById('progressBar').style.width = (count / questions.length * 100) + '%';
+        document.getElementById('progressText').innerText = `${count} / ${questions.length}`;
+        if (count === questions.length) document.getElementById('submitBtn').disabled = false;
     };
 
     document.getElementById('submitBtn').onclick = () => {
-      document.getElementById('test').classList.remove('active');
-      document.getElementById('result').classList.add('active');
-      showResult();
+        document.getElementById('test').classList.remove('active');
+        document.getElementById('result').classList.add('active');
+        showResult();
     };
 
     function showResult() {
-      // 模拟计算逻辑：基于特定维度的分值倾向
-      // 正常开发中应统计各维度均值，这里简化为示例
-      const r = TYPE_LIBRARY["INTJ"]; // 默认结果
+        // 模拟计算逻辑：基于特定维度的分值倾向
+        // 正常开发中应统计各维度均值，这里简化为示例
+        const r = TYPE_LIBRARY["INTJ"]; // 默认结果
 
-      document.getElementById('resultTypeName').innerText = r.cn;
-      document.getElementById('resultTypeSub').innerText = r.intro;
-      document.getElementById('resultDesc').innerText = r.desc;
+        document.getElementById('resultTypeName').innerText = r.cn;
+        document.getElementById('resultTypeSub').innerText = r.intro;
+        document.getElementById('resultDesc').innerText = r.desc;
 
-      // 渲染十五维度
-      const dimBox = document.getElementById('dimList');
-      dimBox.innerHTML = Object.keys(dimensionMeta).map(key => {
-        const val = Math.floor(Math.random() * 60) + 30; // 模拟得分
-        return `
+        // 渲染十五维度
+        const dimBox = document.getElementById('dimList');
+        dimBox.innerHTML = Object.keys(dimensionMeta).map(key => {
+            const val = Math.floor(Math.random() * 60) + 30; // 模拟得分
+            return `
           <div class="dim-item">
             <div class="dim-header"><span>${dimensionMeta[key]}</span><span>${val}%</span></div>
             <div class="dim-bar-bg"><div class="dim-bar-fill" style="width:${val}%"></div></div>
           </div>
         `;
-      }).join('');
+        }).join('');
     }
-  </script>
+</script>
 </body>
 </html>
